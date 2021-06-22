@@ -18,6 +18,8 @@ import { connect } from 'react-redux';
 import { fetchList } from '../../actions';
 import _ from 'lodash'
 import { getHHMMDate } from '../../utils';
+import { navigate } from '../../navigation/service';
+import { NAVIGATION_TITLE } from '../../constants';
 LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
 LogBox.ignoreAllLogs();
 const HomeScreen = (props) => {
@@ -32,10 +34,13 @@ const HomeScreen = (props) => {
   }, [])
 
   const renderHeader = () => {
+    
     return (
       <View style={styles.header}>
         <Image source={images.imgAvatar} style={styles.imageHeader} />
-        <TouchableOpacity style={styles.buttonAdd}>
+        <TouchableOpacity style={styles.buttonAdd}
+          onPress={()=>{navigate(NAVIGATION_TITLE.ADD_NEW)}}
+        >
           <Text style={styles.iconAdd}>+</Text>
         </TouchableOpacity>
       </View>
