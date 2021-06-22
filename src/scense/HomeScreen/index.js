@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -6,13 +6,14 @@ import {
   TouchableOpacity,
   FlatList,
   ImageBackground,
+  Animated,
 } from 'react-native';
 import images from '../../assest/image';
-import {styles} from './styles';
-import {AnimatedCircularProgress} from 'react-native-circular-progress';
-import {defaultColor} from '../../theme/color';
+import { styles } from './styles';
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import { defaultColor } from '../../theme/color';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {SwipeItem, SwipeButtonsContainer} from 'react-native-swipe-item';
+import { SwipeItem, SwipeButtonsContainer } from 'react-native-swipe-item';
 import { LogBox } from 'react-native';
 import { connect } from 'react-redux';
 import { fetchList } from '../../actions';
@@ -20,26 +21,35 @@ import _ from 'lodash'
 import { getHHMMDate } from '../../utils';
 import { navigate } from '../../navigation/service';
 import { NAVIGATION_TITLE } from '../../constants';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import BottomModal, { ModalContent, ModalTitle } from 'react-native-modals';
 LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
 LogBox.ignoreAllLogs();
+Ionicons.loadFont()
 const HomeScreen = (props) => {
   const [image, setImage] = useState([
     images.bgItem1,
     images.bgItem2,
     images.bgItem3,
   ]);
+  const [modalVisible, setModalVisible] = useState(false)
 
   useEffect(() => {
     props.fetchTodo()
   }, [])
 
+  const scrollY = new Animated.Value(0)
+  const translateY = scrollY.interpolate({
+    inputRange: [0, 45],
+    outputRange: [0, -30]
+  })
   const renderHeader = () => {
-    
+
     return (
       <View style={styles.header}>
         <Image source={images.imgAvatar} style={styles.imageHeader} />
         <TouchableOpacity style={styles.buttonAdd}
-          onPress={()=>{navigate(NAVIGATION_TITLE.ADD_NEW)}}
+          onPress={() => { setModalVisible(true) }}
         >
           <Text style={styles.iconAdd}>+</Text>
         </TouchableOpacity>
@@ -82,9 +92,13 @@ const HomeScreen = (props) => {
           <Ionicons name="newspaper-outline" size={20} />
         </View>
         <FlatList
-          data={_.sortBy(props.data,['createdDate'])}
+          data={_.sortBy(props.data, ['createdDate'])}
           renderItem={renderItem}
           keyExtractor={item => item.id}
+          onScroll={(e) => {
+            scrollY.setValue(e.nativeEvent.contentOffset.y)
+
+          }}
         />
 
         {/* <FlatList */}
@@ -120,11 +134,11 @@ const HomeScreen = (props) => {
         style={styles.button}
         swipeContainerStyle={styles.swipeContentContainerStyle}
         rightButtons={leftButton}>
-        <View style={{flexDirection: 'row'}}>
+        <View style={{ flexDirection: 'row' }}>
           <Text
             style={{
               alignSelf: 'center',
-              transform: [{rotate: '270deg'}],
+              transform: [{ rotate: '270deg' }],
               color: defaultColor.darkBlue,
             }}>
             {getHHMMDate(props.item.createdDate)}
@@ -138,41 +152,73 @@ const HomeScreen = (props) => {
                 borderRadius: 10,
                 padding: 10,
               }}
-              imageStyle={{borderRadius: 20}}>
+              imageStyle={{ borderRadius: 20 }}>
               <Text style={styles.labelItem}>{props.item.title}</Text>
               <Text>{props.item.body}</Text>
             </ImageBackground>
           </View>
         </View>
       </SwipeItem>
-      //     <SwipeItem
-      //     style={styles.button}
-      //     swipeContainerStyle={styles.swipeContentContainerStyle}
-      //     leftButtons={leftButton}
-      // >
-      //     <Text>
-      //         Swipe me!
-      //     </Text>
-      // </SwipeItem>
     );
   };
 
   return (
-    <View style={{flex: 1, backgroundColor: defaultColor.backgroundColor}}>
-      {renderHeader()}
-      {renderBody()}
-      {renderList()}
-    </View>
+    <SafeAreaView style={{ flex: 1, backgroundColor: defaultColor.backgroundColor }}>
+      <Animated.View
+        style={{
+          transform: [
+            { translateY: translateY }
+          ]
+        }}
+      >
+        {renderHeader()}
+        {renderBody()}
+
+        {renderList()}
+      </Animated.View>
+      <BottomModal
+        visible={modalVisible}
+        onTouchOutside={() =>  setModalVisible(false)}
+      >
+        <BottomModal
+          style={{ justifyContent: 'flex-end' }}
+          modalStyle={{ borderRadius: 30 }}
+          visible={true}
+          onTouchOutside={() => setModalVisible(false)}
+          height={0.9}
+          width={1}
+          onSwipeOut={() => setModalVisible(false)}
+          modalTitle={
+            <ModalTitle
+              title="Bottom Modal"
+              hasTitleBar
+            />
+          }
+        >
+          <ModalContent
+            style={{
+              flex: 1,
+              backgroundColor: 'fff',
+            }}
+          >
+            <Text>
+              Bottom Modal with Title
+            </Text>
+          </ModalContent>
+        </BottomModal>
+      </BottomModal>
+
+    </SafeAreaView>
   );
 };
 
-const mapStateToProps =(state)=>({
+const mapStateToProps = (state) => ({
   ...state,
   data: state.todoReducer.data
 })
 
-const mapDispatchToProps=(dispatch)=>({
-  fetchTodo: ()=>dispatch(fetchList())
+const mapDispatchToProps = (dispatch) => ({
+  fetchTodo: () => dispatch(fetchList())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);

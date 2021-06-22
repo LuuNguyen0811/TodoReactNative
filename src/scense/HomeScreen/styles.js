@@ -80,7 +80,7 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   containerList: {
-    flex: 1,
+    // flex: 1,
   },
 
   //style item
@@ -109,5 +109,6 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#ffffff',
     borderRadius: 10,
+    flex:1
   },
 });
