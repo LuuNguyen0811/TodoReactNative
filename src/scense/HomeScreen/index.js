@@ -14,72 +14,22 @@ import {defaultColor} from '../../theme/color';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {SwipeItem, SwipeButtonsContainer} from 'react-native-swipe-item';
 import { LogBox } from 'react-native';
+import { connect } from 'react-redux';
+import { fetchList } from '../../actions';
+import _ from 'lodash'
+import { getHHMMDate } from '../../utils';
 LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
 LogBox.ignoreAllLogs();
-
-const fakeData = [
-  {
-    userId: 1,
-    id: 1,
-    title:
-      'sunt aut facere repellat provident occaecati excepturi optio reprehenderit',
-    body: 'quia et suscipit\nsuscipit recusandae consequuntur expedita et cum',
-  },
-  {
-    userId: 1,
-    id: 2,
-    title: 'qui est esse',
-    body: 'est rerum tempore vitae\nsequi sint nihil reprehenderit dolor beatae ea dolores ',
-  },
-  {
-    userId: 1,
-    id: 3,
-    title: 'ea molestias quasi exercitationem repellat qui ipsa sit aut',
-    body: 'et iusto sed quo iure\nvoluptatem occaecati omnis eligendi aut ad\nvoluptatem ',
-  },
-  {
-    userId: 1,
-    id: 4,
-    title: 'eum et est occaecati',
-    body: 'ullam et saepe reiciendis voluptatem adipisci\nsit amet autem assumenda provident',
-  },
-  {
-    userId: 1,
-    id: 5,
-    title: 'nesciunt quas odio',
-    body: 'repudiandae veniam quaerat sunt sed\nalias aut fugiat sit autem sed est\nvoluptatem',
-  },
-  {
-    userId: 1,
-    id: 6,
-    title: 'dolorem eum magni eos aperiam quia',
-    body: 'ut aspernatur corporis harum nihil quis provident sequi\nmollitia nobis aliquid',
-  },
-  {
-    userId: 1,
-    id: 7,
-    title: 'magnam facilis autem',
-    body: 'dolore placeat quibusdam ea quo vitae\nmagni quis enim qui quis quo nemo aut ',
-  },
-  {
-    userId: 1,
-    id: 8,
-    title: 'dolorem dolore est ipsam',
-    body: 'dignissimos aperiam dolorem qui eum\nfacilis quibusdam animi sint suscipit qui sint',
-  },
-  {
-    userId: 1,
-    id: 9,
-    title: 'nesciunt iure omnis dolorem tempora et accusantium',
-    body: 'consectetur animi nesciunt iure dolore\nenim quia ad\nveniam autem ut quam aut ',
-  },
-];
-const HomeScreen = () => {
+const HomeScreen = (props) => {
   const [image, setImage] = useState([
     images.bgItem1,
     images.bgItem2,
     images.bgItem3,
   ]);
+
+  useEffect(() => {
+    props.fetchTodo()
+  }, [])
 
   const renderHeader = () => {
     return (
@@ -108,7 +58,7 @@ const HomeScreen = () => {
           <View style={styles.bodyDetail}>
             <Text style={styles.textProgress}>Weekly progress</Text>
             <View style={styles.detailContainer}>
-              <Text style={styles.taskNumber}>14/22</Text>
+              <Text style={styles.taskNumber}>14/{props?.data?.length}</Text>
               <Text style={styles.labelTask}>Task done</Text>
             </View>
           </View>
@@ -122,12 +72,12 @@ const HomeScreen = () => {
       <View style={styles.containerList}>
         <View style={styles.labelTaskNumberContainer}>
           <Text style={styles.labelText}>
-            You have {fakeData.length} tasks for today
+            You have {props?.data?.length} tasks for today
           </Text>
           <Ionicons name="newspaper-outline" size={20} />
         </View>
         <FlatList
-          data={fakeData}
+          data={_.sortBy(props.data,['createdDate'])}
           renderItem={renderItem}
           keyExtractor={item => item.id}
         />
@@ -172,7 +122,7 @@ const HomeScreen = () => {
               transform: [{rotate: '270deg'}],
               color: defaultColor.darkBlue,
             }}>
-            10:00
+            {getHHMMDate(props.item.createdDate)}
           </Text>
           <View style={styles.containerItem}>
             <ImageBackground
@@ -211,4 +161,13 @@ const HomeScreen = () => {
   );
 };
 
-export default HomeScreen;
+const mapStateToProps =(state)=>({
+  ...state,
+  data: state.todoReducer.data
+})
+
+const mapDispatchToProps=(dispatch)=>({
+  fetchTodo: ()=>dispatch(fetchList())
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);

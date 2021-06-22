@@ -1,14 +1,14 @@
 import axios from "axios";
 
-const urlGetMovies = 'https://jsonplaceholder.typicode.com/todos';
+const url = 'https://60cbfd0871b73400171f6d15.mockapi.io/api/getList/';
 
 const httpClient = axios.create({
-    baseURL: 'https://60cbfd0871b73400171f6d15.mockapi.io/api/getList/',
+    baseURL: url,
 })
 
 httpClient.interceptors.request.use(
      async function (config) {
-        config.baseURL = 'https://60cbfd0871b73400171f6d15.mockapi.io/api/getList/'
+        config.baseURL = url
         console.log(config);
         return config
     },
@@ -31,21 +31,12 @@ httpClient.interceptors.response.use(
 
 
 function* getTodoFromApi() {
-    const response = yield httpClient.get('todos')
-    // const response = yield fetch(urlGetMovies, {
-    //     method: 'GET',
-    //     headers: {
-    //         Accept: 'application/json',
-    //         'Content-Type': 'application/json',
-    //     },
-    //     body: '',
-    // });
-    // const todos = yield response.status === 200 ? response.json(): []       
+    const response = yield httpClient.get('todo')  
     return response
 }
 
 const postTodo=()=>{
-    const response =  httpClient.post('todos')
+    const response =  httpClient.post('todo')
     return response
 }
 export const Api = {
