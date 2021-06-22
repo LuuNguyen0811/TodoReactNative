@@ -9,7 +9,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import SplashScreen from './src/scense/splash';
 import RootNavigation from './src/navigation/RootNavigation'
-const Stack = createStackNavigator();
 
 const App = () => {
   return (
