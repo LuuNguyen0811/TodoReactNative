@@ -7,6 +7,7 @@ import { styles } from './styles';
 
 const SplashScreen = () => {
     useEffect(() => {
+      // global.props.showProgress()
         setTimeout(() => {
             replace(NAVIGATION_TITLE.HOME)
         }, 3000);

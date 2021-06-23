@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -43,7 +43,10 @@ const HomeScreen = props => {
 
   useEffect(() => {
     props.fetchTodo();
-  }, []);
+  }, [props?.data?.leng]);
+
+  global.props.showProgress(props?.loading);
+
 
   const scrollY = new Animated.Value(0);
   const translateY = scrollY.interpolate({
@@ -59,13 +62,14 @@ const HomeScreen = props => {
           style={styles.buttonAdd}
           onPress={() => {
             setModalVisible(true);
+            // navigate(NAVIGATION_TITLE.ADD_NEW)
           }}>
           <Text style={styles.iconAdd}>+</Text>
         </TouchableOpacity>
       </View>
     );
   };
-  
+
   const renderBody = () => {
     return (
       <View>
@@ -142,7 +146,10 @@ const HomeScreen = props => {
           flexDirection: 'column',
           padding: 10,
         }}>
-        <TouchableOpacity onPress={()=>{onPressDelete(props.item.id)}}>
+        <TouchableOpacity
+          onPress={() => {
+            onPressDelete(props.item.id);
+          }}>
           <Ionicons name="trash-outline" size={40} color="red" />
         </TouchableOpacity>
       </SwipeButtonsContainer>
@@ -237,31 +244,40 @@ const HomeScreen = props => {
     );
   };
 
-  const onChangeContent = value => {
-    console.log('value', value);
-    setContent(value);
-  };
-  const onChangeDesc = value => {
-    console.log('valueq', value);
-    setDesc(value);
-  };
-  const onChangeDate = value => {
-    console.log('valuew', value);
-    setDate(value);
-  };
+  const onChangeContent = useCallback((value)=>{
+    setContent(value)
+  },[content])
+
+  const onChangeDesc = useCallback((value)=>{
+    setDesc(value)
+  },[desc])
+
+  const onChangeDate = useCallback((value)=>{
+    setDate(value)
+  },[date])
 
   const onAddNewTask = () => {
+    global.props.showProgress();
     const params = {
       createdDate: date,
       title: content,
       decripstion: desc,
     };
     props.postTodo(params);
+    if (props.dataResponse.status === 200) {
+      props.fetchTodo();
+      setModalVisible(false);
+    }
   };
 
-  const onPressDelete = (id)=>{
-    props.deleteTask(id)
-  }
+  const onPressDelete = id => {
+    global.props.showProgress();
+    props.deleteTask(id);
+    if (props.dataResponse.status === 200) {
+      props.fetchTodo();
+      setModalVisible(false);
+    }
+  };
 
   return (
     <SafeAreaView
@@ -282,13 +298,15 @@ const HomeScreen = props => {
 
 const mapStateToProps = state => ({
   ...state,
-  data: state.todoReducer.data,
+  data: state.todoReducer.data.data,
+  dataResponse: state.todoReducer.data,
+  loading: state.todoReducer.loading,
 });
 
 const mapDispatchToProps = dispatch => ({
   fetchTodo: () => dispatch(fetchList()),
   postTodo: params => dispatch(postItem(params)),
-  deleteTask: id=> dispatch(deleteTask(id))
+  deleteTask: id => dispatch(deleteTask(id)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);

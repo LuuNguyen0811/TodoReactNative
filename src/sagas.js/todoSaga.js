@@ -34,7 +34,7 @@ function* postTodo(action) {
 function* deleteTask(action){
   try {
     const deleteTask = yield Api.deleteTask(action.id)
-    yield put({type: DELETE_SUCCESS,response: deleteTask})
+    yield put({type: DELETE_SUCCESS,heheh: deleteTask})
   } catch (error) {
     yield put({type: DELETE_FAIL,error})
   }

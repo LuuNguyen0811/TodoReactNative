@@ -1,16 +1,16 @@
 import {StyleSheet, View, TextInput} from 'react-native';
-import React from 'react';
+import React, { memo } from 'react';
 
 const RenderTextInput = props => {
   const {placeholder, value, onChangeText} = props;
-  console.log(props);
+  console.log('render text');
   return (
     <View style={styles.container}>
       <TextInput
         style={styles.textInput}
         placeholder={placeholder}
         value={value}
-        onChangeText={(value)=>{onChangeText(value)}}
+        onChangeText={onChangeText}
       />
     </View>
   );
@@ -28,4 +28,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RenderTextInput;
+export default memo(RenderTextInput);
