@@ -19,9 +19,9 @@ function* fetchTodos() {
   }
 }
 
-function* postTodo() {
+function* postTodo(action) {
   try {
-    const postTodo = yield Api.postTodo();
+    const postTodo = yield Api.postTodo(action.params);
     yield put({type: POST_SUCCESS, response: postTodo});
   } catch (error) {
     yield put({type: POST_FAIL, error});

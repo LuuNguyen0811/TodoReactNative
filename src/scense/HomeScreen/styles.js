@@ -80,11 +80,12 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   containerList: {
-    // flex: 1,
+    flex: 1,
   },
 
   //style item
   containerItem: {
+    justifyContent:'flex-start',
     width: 340,
     // marginHorizontal:10,
     borderWidth: 1,
@@ -102,7 +103,7 @@ export const styles = StyleSheet.create({
 
   button: {
     flex: 1,
-    marginRight:20
+
   },
   swipeContentContainerStyle: {
     justifyContent: 'center',
@@ -111,4 +112,28 @@ export const styles = StyleSheet.create({
     borderRadius: 10,
     flex:1
   },
+
+  //add task
+  labelAdd:{
+    alignSelf:"center",
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'white',
+    // borderBottomWidth:1,
+    // borderBottomColor: 'white'
+  },
+  containerBodyAdd:{
+    marginTop:20,
+  },
+  buttonAddTask:{
+    width: 200,
+    height:50,
+    margin: 40,
+    alignSelf:'center',
+    justifyContent:'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderRadius: 20,
+    elevation: 20,
+  }
 });
