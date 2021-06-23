@@ -1,6 +1,9 @@
 //Saga effects
 import {put, takeLatest} from '@redux-saga/core/effects';
 import {
+  DELETE_FAIL,
+  DELETE_SUCCESS,
+  DELETE_TASK,
   FETCH_FAIL,
   FETCH_SUCCESS,
   FETCH_TODO,
@@ -27,7 +30,18 @@ function* postTodo(action) {
     yield put({type: POST_FAIL, error});
   }
 }
+
+function* deleteTask(action){
+  try {
+    const deleteTask = yield Api.deleteTask(action.id)
+    yield put({type: DELETE_SUCCESS,response: deleteTask})
+  } catch (error) {
+    yield put({type: DELETE_FAIL,error})
+  }
+}
 export function* watchFetchTodo() {
   yield takeLatest(FETCH_TODO, fetchTodos);
   yield takeLatest(POST_TODO, postTodo);
+  yield takeLatest(DELETE_TASK, deleteTask);
+
 }

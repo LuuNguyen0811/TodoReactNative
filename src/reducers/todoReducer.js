@@ -1,4 +1,4 @@
-import { FETCH_FAIL, FETCH_SUCCESS, POST_FAIL, POST_SUCCESS } from "../actions/actionTypes";
+import { DELETE_FAIL, FETCH_FAIL, FETCH_SUCCESS, POST_FAIL, POST_SUCCESS } from "../actions/actionTypes";
 
 const todoReducer = (data = [], action) => {
     console.log('actionnn',action);
@@ -14,6 +14,8 @@ const todoReducer = (data = [], action) => {
         //     return 'Success'
         case POST_FAIL:
             return []
+        case DELETE_FAIL:
+            return []    
         default:
             return data; //state does not change
     }

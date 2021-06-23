@@ -9,6 +9,7 @@ import {
   Animated,
   KeyboardAvoidingView,
   Platform,
+  BackHandler,
 } from 'react-native';
 import images from '../../assest/image';
 import {styles} from './styles';
@@ -18,10 +19,10 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import {SwipeItem, SwipeButtonsContainer} from 'react-native-swipe-item';
 import {LogBox} from 'react-native';
 import {connect} from 'react-redux';
-import {fetchList, postItem} from '../../actions';
+import {deleteTask, fetchList, postItem} from '../../actions';
 import _ from 'lodash';
 import {getHHMMDate} from '../../utils';
-import {navigate} from '../../navigation/service';
+import {navigate, replace} from '../../navigation/service';
 import {NAVIGATION_TITLE} from '../../constants';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import BottomModal, {ModalContent, ModalTitle} from 'react-native-modals';
@@ -141,7 +142,7 @@ const HomeScreen = props => {
           flexDirection: 'column',
           padding: 10,
         }}>
-        <TouchableOpacity onPress={() => console.log('right button clicked')}>
+        <TouchableOpacity onPress={()=>{onPressDelete(props.item.id)}}>
           <Ionicons name="trash-outline" size={40} color="red" />
         </TouchableOpacity>
       </SwipeButtonsContainer>
@@ -258,8 +259,8 @@ const HomeScreen = props => {
     props.postTodo(params);
   };
 
-  const onDeleteTask = ()=>{
-    
+  const onPressDelete = (id)=>{
+    props.deleteTask(id)
   }
 
   return (
@@ -287,6 +288,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   fetchTodo: () => dispatch(fetchList()),
   postTodo: params => dispatch(postItem(params)),
+  deleteTask: id=> dispatch(deleteTask(id))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);

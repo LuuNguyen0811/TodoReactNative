@@ -42,7 +42,14 @@ const postTodo = (params) => {
   });
   return response;
 };
+
+const deleteTask = (id)=>{
+    const response = httpClient.delete(`todo/${id}`)
+    return response
+}
+
 export const Api = {
   getTodoFromApi,
   postTodo,
+  deleteTask
 };
