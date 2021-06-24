@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -27,15 +27,18 @@ import {NAVIGATION_TITLE} from '../../constants';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import BottomModal, {ModalContent, ModalTitle} from 'react-native-modals';
 import RenderTextInput from '../../components/RenderTextInput';
+import { AppContext } from '../../../AppContext';
 LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
 LogBox.ignoreAllLogs();
 Ionicons.loadFont();
 const HomeScreen = props => {
+
   const [image, setImage] = useState([
     images.bgItem1,
     images.bgItem2,
     images.bgItem3,
   ]);
+
   const [modalVisible, setModalVisible] = useState(false);
   const [content, setContent] = useState('');
   const [desc, setDesc] = useState('');
@@ -45,9 +48,12 @@ const HomeScreen = props => {
     props.fetchTodo();
   }, [props?.data?.leng]);
 
-  global.props.showProgress(props?.loading);
+  // progress.showProgress(props?.loading);
 
+  const progress = useContext(AppContext)
+  progress.showProgress(props?.loading)
 
+  console.log('context', useContext(AppContext));
   const scrollY = new Animated.Value(0);
   const translateY = scrollY.interpolate({
     inputRange: [0, 45],
@@ -257,7 +263,7 @@ const HomeScreen = props => {
   },[date])
 
   const onAddNewTask = () => {
-    global.props.showProgress();
+    progress.showProgress();
     const params = {
       createdDate: date,
       title: content,
@@ -271,7 +277,7 @@ const HomeScreen = props => {
   };
 
   const onPressDelete = id => {
-    global.props.showProgress();
+    progress.showProgress();
     props.deleteTask(id);
     if (props.dataResponse.status === 200) {
       props.fetchTodo();

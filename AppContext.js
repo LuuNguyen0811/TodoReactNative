@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Loading from './src/components/Loading'
 
-const AppContext = React.createContext()
+export const AppContext = React.createContext()
 export const AppConsumer = AppContext.Consumer;
 
 const AppProvider =(props)=>{

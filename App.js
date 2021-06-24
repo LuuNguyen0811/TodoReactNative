@@ -15,7 +15,7 @@ const App = (props) => {
       <AppProvider>
         <AppConsumer {...props}>
           {funcs => {
-            global.props = {...funcs};
+            // global.props = {...funcs};
             return (
               <>
                 <RootNavigation {...funcs} />
