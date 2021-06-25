@@ -2,7 +2,7 @@ import {StyleSheet, View, TextInput} from 'react-native';
 import React, { memo } from 'react';
 
 const RenderTextInput = props => {
-  const {placeholder, value, onChangeText} = props;
+  const {placeholder, value, onChangeText,ref} = props;
   console.log('render text');
   return (
     <View style={styles.container}>

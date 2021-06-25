@@ -46,7 +46,7 @@ const HomeScreen = props => {
 
   useEffect(() => {
     props.fetchTodo();
-  }, [props?.data?.leng]);
+  }, [props?.data?.length]);
 
   // progress.showProgress(props?.loading);
 
